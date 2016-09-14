@@ -68,6 +68,8 @@ int main(int argc, char *argv[]) {
             }
         }
         else {
+            cout << "Copying: " << from << endl;
+
             std::ifstream src(from, std::ios::binary);
             std::ofstream dst(to, std::ios::binary);
 
