@@ -22,6 +22,9 @@ int main(int argc, char *argv[]) {
             case 'f':
                 fromDir = optarg;
                 break;
+
+            default:
+                abort();
         }
     }
 
@@ -35,14 +38,19 @@ int main(int argc, char *argv[]) {
     cout << "Created directory " << toDir << endl;
 
     dirent *subDir;
-    subDir = readdir(dir);
 
-    while (subDir) {
+    while ((subDir = readdir(dir)) != NULL) {
+
+        if (strcmp(".", subDir->d_name) == 0 || strcmp("..", subDir->d_name) == 0)
+            continue;
 
         string from(fromDir);
         string to(toDir);
 
+        from += "/";
         from += subDir->d_name;
+
+        to += "/";
         to += subDir->d_name;
 
         if(subDir->d_type == DT_DIR) {
@@ -68,8 +76,6 @@ int main(int argc, char *argv[]) {
             src.close();
             dst.close();
         }
-
-        subDir = readdir(dir);
     }
 
     return 0;
