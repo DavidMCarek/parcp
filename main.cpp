@@ -50,10 +50,10 @@ int main(int argc, char *argv[]) {
 
                 char *args[256] = {
                         argv[0],
-                        static_cast<char *>("-f"),
-                        static_cast<char *>(from.c_str()),
-                        static_cast<char *>("-t"),
-                        static_cast<char *>(to.c_str())
+                        const_cast<char *>("-f"),
+                        const_cast<char *>(from.c_str()),
+                        const_cast<char *>("-t"),
+                        const_cast<char *>(to.c_str())
                 };
 
                 execv(argv[0], args);
