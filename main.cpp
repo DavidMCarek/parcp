@@ -3,14 +3,15 @@
 #include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <cstring>
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
 
-    char *toDir;
-    char *fromDir;
+    char *toDir = NULL;
+    char *fromDir = NULL;
 
     int c;
 
@@ -56,6 +57,9 @@ int main(int argc, char *argv[]) {
         to += subDir->d_name;
 
         if(subDir->d_type == DT_DIR) {
+
+            waitCount++;
+
             if (fork() == 0) {
 
                 char *args[256] = {
@@ -63,10 +67,10 @@ int main(int argc, char *argv[]) {
                         const_cast<char *>("-f"),
                         const_cast<char *>(from.c_str()),
                         const_cast<char *>("-t"),
-                        const_cast<char *>(to.c_str())
+                        const_cast<char *>(to.c_str()),
+                        NULL
                 };
 
-                waitCount++;
 
                 execv(argv[0], args);
             }
@@ -86,9 +90,8 @@ int main(int argc, char *argv[]) {
 
     closedir(dir);
 
-    for (int i = waitCount; i > 0; i--) {
-        wait();
-    }
+    for (int i = waitCount; i > 0; i--)
+        wait(nullptr);
 
     return 0;
 }
