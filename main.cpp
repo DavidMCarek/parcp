@@ -39,6 +39,8 @@ int main(int argc, char *argv[]) {
 
     dirent *subDir;
 
+    int waitCount = 0;
+
     while ((subDir = readdir(dir)) != NULL) {
 
         if (strcmp(".", subDir->d_name) == 0 || strcmp("..", subDir->d_name) == 0)
@@ -64,6 +66,8 @@ int main(int argc, char *argv[]) {
                         const_cast<char *>(to.c_str())
                 };
 
+                waitCount++;
+
                 execv(argv[0], args);
             }
         }
@@ -78,6 +82,12 @@ int main(int argc, char *argv[]) {
             src.close();
             dst.close();
         }
+    }
+
+    closedir(dir);
+
+    for (int i = waitCount; i > 0; i--) {
+        wait();
     }
 
     return 0;
